@@ -9,9 +9,8 @@
 
 (defn board
   [board]
-  [:ul
+  [:div#board
    (for [y (range (count board))]
-     [:li
-      [:ul
+     [:div.row
        (for [x (range (count (first board)))]
-         [:li "x"])]])])
+         [:div.cell "_"])])])
