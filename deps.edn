@@ -2,6 +2,6 @@
         org.clojure/clojurescript {:mvn/version "1.10.339"}
         com.bhauman/figwheel-main {:mvn/version "0.1.9"}
         reagent {:mvn/version "0.8.1"}
-        ;; optional but recommended
-        com.bhauman/rebel-readline-cljs {:mvn/version "0.1.4"}}
- :paths ["src" "resources" "target"]}
+        com.bhauman/rebel-readline-cljs {:mvn/version "0.1.4"}
+        com.bhauman/cljs-test-display {:mvn/version "0.1.1"}}
+ :paths ["src" "tests" "resources" "target"]}

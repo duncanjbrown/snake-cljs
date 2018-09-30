@@ -1,4 +1,5 @@
-^{:watch-dirs ["src"]
-  :css-dirs ["resources/public/css"]}
+^{:watch-dirs ["src" "tests"]
+  :css-dirs ["resources/public/css"]
+  :extra-main-files {:tests {:main snake.test-runner}}}
 {:main snake.core}
 
