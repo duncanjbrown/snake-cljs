@@ -7,6 +7,7 @@
     (take length (iterate #(vec (map + [0 1] %)) start-pos))))
 
 (defn move-snake
-  [snake movement-vector]
-  (let [new-head-position (vec (map + (last snake) movement-vector))]
+  [snake movement-vector board-size]
+  (let [new-head-position (map #(mod % 10)
+                               (vec (map + (last snake) movement-vector)))]
     (drop 1 (conj snake new-head-position))))
