@@ -8,8 +8,8 @@
 
 (defn move-snake
   [snake movement-vector board-size]
-  (let [new-head-position (vec (map #(mod % 10)
-                                    (map + (last snake) movement-vector)))]
+  (let [new-head-position (mapv #(mod % 10)
+                                (map + (last snake) movement-vector))]
     (vec (drop 1 (conj snake new-head-position)))))
 
 ;; (move-snake [[0 1] [0 2]] [0 1] 10)
