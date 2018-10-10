@@ -1,9 +1,8 @@
 (ns snake.board)
 
-(def width 10)
-(def height 10)
+(def size 12)
 
-(def board (vec (repeat width (vec (repeat height nil)))))
+(def board (vec (repeat size (vec (repeat size nil)))))
 
 (defn- populate
   [board cells type]
@@ -21,7 +20,7 @@
 
 (defn place-food
   [snake-cells]
-  (let [coords (set [[(rand-int height) (rand-int width)]])]
+  (let [coords (set [[(rand-int size) (rand-int size)]])]
     (if (some coords snake-cells)
       (recur snake-cells)
       coords)))

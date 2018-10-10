@@ -3,24 +3,38 @@
             [snake.board :as board]
             [snake.snake :as snk]))
 
-(defonce state
+(def starting-state
   (let [starting-snake (snk/new-snake)]
-    (reagent/atom {
-                   :direction [0 1]
-                   :snake starting-snake
-                   :speed 100
-                   :food (board/place-food starting-snake)
-                   :tick-timeout nil})))
+    {
+     :direction [0 1]
+     :snake starting-snake
+     :speed 100
+     :food (board/place-food starting-snake)
+     :tick-timeout nil
+     }))
+
+(defonce state (reagent/atom starting-state))
+
+(defn- restart!
+  []
+  (reset! state starting-state))
+
+(defn- snake-colliding?
+  [[head & body]]
+  (some #(= % head) body))
 
 (defn tick
   []
   (let [{:keys [snake food direction speed]} @state]
-    (if (some food snake)
-      (let [new-snake (snk/grow-snake snake direction 10)]
-        (swap! state assoc
-               :snake new-snake
-               :food (board/place-food new-snake)))
-      (swap! state assoc :snake (snk/move-snake snake direction 10)))
+    (set (:snake @state))
+    (if (snake-colliding? snake)
+      (restart!)
+      (if (some food snake)
+        (let [new-snake (snk/grow-snake snake direction board/size)]
+          (swap! state assoc
+                :snake new-snake
+                :food (board/place-food new-snake)))
+        (swap! state assoc :snake (snk/move-snake snake direction board/size))))
     (swap! state assoc :tick-timeout (js/setTimeout #(reagent/next-tick tick) speed))))
 
 (defn- direction-to-vector

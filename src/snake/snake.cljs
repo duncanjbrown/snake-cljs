@@ -1,4 +1,5 @@
-(ns snake.snake)
+(ns snake.snake
+  (:require [snake.board :as board]))
 
 (defn new-snake
   []
@@ -8,7 +9,7 @@
 
 (defn grow-snake
   [snake movement-vector board-size]
-  (let [new-head-position (mapv #(mod % 10)
+  (let [new-head-position (mapv #(mod % board/size)
                                 (map + (last snake) movement-vector))]
     (conj snake new-head-position)))
 
