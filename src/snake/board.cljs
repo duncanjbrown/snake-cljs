@@ -6,22 +6,32 @@
 (def board (vec (repeat width (vec (repeat height nil)))))
 
 (defn- populate
-  [board snake]
+  [board cells type]
   (reduce (fn [board coords]
-            (assoc-in board coords :snake))
+            (assoc-in board coords type))
           board
-          snake))
+          cells))
 
 (defn- board-cell
   [value]
   (case value
     nil [:div.cell "_"]
-    :snake [:div.cell "█"]))
+    :snake [:div.cell "█"]
+    :food [:div.cell "F"]))
+
+(defn place-food
+  [snake-cells]
+  (let [coords (set [[(rand-int height) (rand-int width)]])]
+    (if (some coords snake-cells)
+      (recur snake-cells)
+      coords)))
 
 (defn game
-  [snake]
-  (let [populated-board (populate board @snake)]
-    [:div#board
+  [snake food]
+  (let [populated-board (-> board
+                            (populate @food :food)
+                            (populate @snake :snake))]
+    [:div#board {:on-key-down #(println "ss")}
      (for [y (range (count populated-board))]
        ^{:key (str "row" y)} [:div.row
         (for [x (range (count (first populated-board)))]
