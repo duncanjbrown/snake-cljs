@@ -1,9 +1,13 @@
 (ns snake.loop
   (:require [snake.snake :as snk]))
 
+(defn- random-coord-in-board
+  [board-size]
+  (vec (take 2 (repeatedly #(rand-int board-size)))))
+
 (defn place-food
   [snake-cells board-size]
-  (let [coords (set [[(rand-int board-size) (rand-int board-size)]])]
+  (let [coords (set [(random-coord-in-board board-size)])]
     (if (some coords snake-cells)
       (recur snake-cells board-size)
       coords)))
