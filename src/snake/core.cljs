@@ -15,27 +15,33 @@
 
 (defonce state (reagent/atom starting-state))
 
+(defn- snake-colliding?
+  [snake]
+  (let [[head & body] (reverse snake)]
+    (some #(= % head) body)))
+
+(declare tick)
 (defn- restart!
   []
-  (reset! state starting-state))
+  (reset! state starting-state)
+  (tick))
 
-(defn- snake-colliding?
-  [[head & body]]
-  (some #(= % head) body))
+(defn- next-state
+  [snake food direction]
+  (if (some food snake)
+    (let [new-snake (snk/grow-snake snake direction board/size)]
+      {:snake new-snake :food (board/place-food new-snake)})
+    {:snake (snk/move-snake snake direction board/size)}))
 
 (defn tick
   []
-  (let [{:keys [snake food direction speed]} @state]
-    (set (:snake @state))
+  (let [{:keys [snake food direction speed]} @state
+        next (next-state snake food direction)]
     (if (snake-colliding? snake)
       (restart!)
-      (if (some food snake)
-        (let [new-snake (snk/grow-snake snake direction board/size)]
-          (swap! state assoc
-                :snake new-snake
-                :food (board/place-food new-snake)))
-        (swap! state assoc :snake (snk/move-snake snake direction board/size))))
-    (swap! state assoc :tick-timeout (js/setTimeout #(reagent/next-tick tick) speed))))
+      (do
+        (swap! state merge next)
+        (swap! state assoc :tick-timeout (js/setTimeout #(reagent/next-tick tick) speed))))))
 
 (defn- direction-to-vector
   [direction]
