@@ -16,7 +16,7 @@
      :snake starting-snake
      :speed 100
      :food (place-food starting-snake board-size)
-     :tick-timeout nil
+     :pause false
      }))
 
 (defn next-state

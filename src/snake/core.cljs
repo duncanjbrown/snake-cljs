@@ -9,11 +9,8 @@
 (declare tick)
 (defn- toggle-pause
   []
-  (if-let [tick-timeout (:tick-timeout @state)]
-    (do
-      (js/clearTimeout tick-timeout)
-      (swap! state assoc :tick-timeout nil))
-    (tick)))
+  (swap! state update :pause not)
+  (tick))
 
 (defn- restart!
   []
@@ -29,13 +26,15 @@
 
 (defn- tick
   []
-  (let [{:keys [snake food direction speed]} @state
+  (let [{:keys [snake food direction speed pause]} @state
         next (loop/next-state snake food direction board/size)]
-    (if (false? next)
-      (restart!)
+    (cond
+      pause nil
+      (false? next) (restart!)
+      :else
       (do
         (swap! state merge next)
-        (swap! state assoc :tick-timeout (js/setTimeout #(reagent/next-tick tick) speed))))))
+        (js/setTimeout #(reagent/next-tick tick) speed)))))
 
 (defn main []
   (when-let [element (js/document.getElementById "app")]
