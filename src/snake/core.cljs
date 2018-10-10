@@ -30,7 +30,7 @@
         next (loop/next-state snake food direction board/size)]
     (cond
       pause nil
-      (false? next) (restart!)
+      (= :dead next) (restart!)
       :else
       (do
         (swap! state merge next)

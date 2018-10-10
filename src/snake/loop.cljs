@@ -22,7 +22,7 @@
 (defn next-state
   [snake food direction board-size]
   (cond (snk/self-colliding? snake)
-          false
+          :dead
         (some food snake)
           (let [new-snake (snk/grow-snake snake direction board-size)]
             {:snake new-snake :food (place-food new-snake board-size)})
