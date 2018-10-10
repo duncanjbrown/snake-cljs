@@ -2,20 +2,9 @@
   (:require [reagent.core :as reagent]
             [snake.board :as board]
             [snake.loop :as loop]
-            [snake.input :as input]
-            [snake.snake :as snk]))
+            [snake.input :as input]))
 
-(def starting-state
-  (let [starting-snake (snk/new-snake)]
-    {
-     :direction [0 1]
-     :snake starting-snake
-     :speed 100
-     :food (board/place-food starting-snake)
-     :tick-timeout nil
-     }))
-
-(defonce state (reagent/atom starting-state))
+(defonce state (reagent/atom (loop/starting-state board/size)))
 
 (declare tick)
 (defn- toggle-pause
@@ -28,7 +17,7 @@
 
 (defn- restart!
   []
-  (reset! state starting-state)
+  (reset! state (loop/starting-state board/size))
   (tick))
 
 (defn- handle-command
@@ -41,8 +30,8 @@
 (defn- tick
   []
   (let [{:keys [snake food direction speed]} @state
-        next (loop/next-state snake food direction)]
-    (if (snk/self-colliding? snake)
+        next (loop/next-state snake food direction board/size)]
+    (if (false? next)
       (restart!)
       (do
         (swap! state merge next)

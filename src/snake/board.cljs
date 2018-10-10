@@ -18,19 +18,12 @@
     :snake [:div.cell "█"]
     :food [:div.cell "F"]))
 
-(defn place-food
-  [snake-cells]
-  (let [coords (set [[(rand-int size) (rand-int size)]])]
-    (if (some coords snake-cells)
-      (recur snake-cells)
-      coords)))
-
 (defn game
   [snake food]
   (let [populated-board (-> board
                             (populate @food :food)
                             (populate @snake :snake))]
-    [:div#board {:on-key-down #(println "ss")}
+    [:div#board
      (for [y (range (count populated-board))]
        ^{:key (str "row" y)} [:div.row
         (for [x (range (count (first populated-board)))]
