@@ -7,6 +7,11 @@
         start-pos [5 4]]
     (vec (take length (iterate #(vec (map + [0 1] %)) start-pos)))))
 
+(defn self-colliding?
+  [snake]
+  (let [[head & body] (reverse snake)]
+    (some #(= % head) body)))
+
 (defn grow-snake
   [snake movement-vector board-size]
   (let [new-head-position (mapv #(mod % board/size)
