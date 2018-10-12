@@ -17,10 +17,15 @@
   (reset! state (loop/starting-state board/size))
   (tick))
 
+(defn- reversing-direction?
+  [old new]
+  (every? zero? (map + old new)))
+
 (defn- handle-command
   [command]
   (if-let [direction (:direction command)]
-    (swap! state assoc :direction direction))
+    (if-not (reversing-direction? (:direction @state) direction)
+      (swap! state assoc :direction direction)))
   (if (:pause command)
     (toggle-pause)))
 
