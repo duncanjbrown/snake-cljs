@@ -24,11 +24,13 @@
     nil [:div.cell.blank " "]
     :snake [:div.cell.snake "█"]
     :snake-head [:div.cell.snake-head "█"]
-    :food [:div.cell.food "♦"]))
+    :food [:div.cell.food "♦"]
+    :wall [:div.cell.wall " "]))
 
 (defn game
-  [snake food]
+  [snake food walls]
   (let [populated-board (-> board
+                            (populate @walls :wall)
                             (populate @food :food)
                             (populate-snake @snake))]
     [:div#board

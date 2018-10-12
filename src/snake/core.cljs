@@ -31,8 +31,8 @@
 
 (defn- tick
   []
-  (let [{:keys [snake food direction speed pause]} @state
-        next (loop/next-state snake food direction board/size)]
+  (let [{:keys [snake food walls direction speed pause]} @state
+        next (loop/next-state snake food walls direction board/size)]
     (cond
       pause nil
       (= :dead next) (restart!)
@@ -47,6 +47,9 @@
       (.addEventListener js/document "keypress" #(handle-command (input/handle-keypress %)))
       (reagent/render-component
        [:div#game
-        [board/game (reagent/cursor state [:snake]) (reagent/cursor state [:food])]]
+        [board/game
+         (reagent/cursor state [:snake])
+         (reagent/cursor state [:food])
+         (reagent/cursor state [:walls])]]
        element)
       (tick))))
