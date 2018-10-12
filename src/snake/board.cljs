@@ -1,6 +1,6 @@
 (ns snake.board)
 
-(def size 12)
+(def size 14)
 
 (def board (vec (repeat size (vec (repeat size nil)))))
 
