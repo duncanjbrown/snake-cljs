@@ -14,9 +14,9 @@
 (defn- board-cell
   [value]
   (case value
-    nil [:div.cell "_"]
-    :snake [:div.cell "█"]
-    :food [:div.cell "F"]))
+    nil [:div.cell.blank " "]
+    :snake [:div.cell.snake "█"]
+    :food [:div.cell.food "♦"]))
 
 (defn game
   [snake food]
