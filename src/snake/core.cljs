@@ -31,8 +31,8 @@
 
 (defn- tick
   []
-  (let [{:keys [snake food walls direction speed pause]} @state
-        next (loop/next-state snake food walls direction board/size)]
+  (let [{:keys [snake food walls direction speed score pause]} @state
+        next (loop/next-state snake food walls direction score board/size)]
     (cond
       pause nil
       (= :dead next) (restart!)
@@ -50,6 +50,8 @@
         [board/game
          (reagent/cursor state [:snake])
          (reagent/cursor state [:food])
-         (reagent/cursor state [:walls])]]
+         (reagent/cursor state [:walls])]
+        [board/score
+         (reagent/cursor state [:score])]]
        element)
       (tick))))

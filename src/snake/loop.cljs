@@ -1,5 +1,6 @@
 (ns snake.loop
-  (:require [snake.snake :as snk]))
+  (:require [snake.snake :as snk]
+            [snake.levels :as levels]))
 
 (defn- random-coord-in-board
   [board-size]
@@ -20,18 +21,22 @@
      :snake starting-snake
      :speed 100
      :food (place-food starting-snake board-size)
-     :walls (set (take 5 (repeatedly #(random-coord-in-board board-size))))
+     :walls (set (take 7 (repeatedly #(random-coord-in-board board-size))))
      :pause false
+     :level 1
+     :score 0
      }))
 
 (defn next-state
-  [snake food walls direction board-size]
+  [snake food walls direction score board-size]
   (cond (snk/self-colliding? snake)
           :dead
         (some walls snake)
           :dead
         (some food snake)
           (let [new-snake (snk/grow-snake snake direction board-size)]
-            {:snake new-snake :food (place-food (distinct (concat new-snake walls)) board-size)})
+            {:snake new-snake
+             :food (place-food (distinct (concat new-snake walls)) board-size)
+             :score (inc score)})
         :else
           {:snake (snk/move-snake snake direction board-size)}))

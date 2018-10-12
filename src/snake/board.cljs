@@ -39,3 +39,7 @@
         (for [x (range (count (first populated-board)))]
           (let [value (get-in populated-board [y x])]
             ^{:key (str y x)} [board-cell value]))])]))
+
+(defn score
+  [score]
+  [:p @score])
