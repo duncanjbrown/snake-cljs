@@ -2,4 +2,5 @@
 .row { clear: both; }
 .cell { float: left; width: 40px; height: 40px; border: 1px solid black; text-align: center;}
 .cell.snake { font-size: 26px; }
-.cell.food{ font-size: 36px; }
+.cell.snake-head { color: red; font-size: 26px; }
+.cell.food { font-size: 36px; }

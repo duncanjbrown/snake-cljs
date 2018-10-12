@@ -11,18 +11,26 @@
           board
           cells))
 
+(defn- populate-snake
+  [board snake]
+  (let [[head & body] (reverse snake)]
+    (-> board
+        (populate [head] :snake-head)
+        (populate body :snake))))
+
 (defn- board-cell
   [value]
   (case value
     nil [:div.cell.blank " "]
     :snake [:div.cell.snake "█"]
+    :snake-head [:div.cell.snake-head "█"]
     :food [:div.cell.food "♦"]))
 
 (defn game
   [snake food]
   (let [populated-board (-> board
                             (populate @food :food)
-                            (populate @snake :snake))]
+                            (populate-snake @snake))]
     [:div#board
      (for [y (range (count populated-board))]
        ^{:key (str "row" y)} [:div.row
