@@ -31,15 +31,14 @@
 
 (defn- tick
   []
-  (let [{:keys [snake food walls direction speed score pause]} @state
-        next (loop/next-state snake food walls direction score board/size)]
+  (let [next (loop/next-state @state board/size)]
     (cond
-      pause nil
+      (:pause next) nil
       (= :dead next) (restart!)
       :else
       (do
         (swap! state merge next)
-        (js/setTimeout #(reagent/next-tick tick) speed)))))
+        (js/setTimeout #(reagent/next-tick tick) (:speed next))))))
 
 (defn main []
   (when-let [element (js/document.getElementById "app")]

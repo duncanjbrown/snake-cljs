@@ -1,42 +1,59 @@
 (ns snake.loop
-  (:require [snake.snake :as snk]
-            [snake.levels :as levels]))
+  (:require [snake.snake :as snk]))
 
-(defn- random-coord-in-board
-  [board-size]
-  (vec (take 2 (repeatedly #(rand-int board-size)))))
-
-(defn place-food
-  [used-cells board-size]
-  (let [coords (set [(random-coord-in-board board-size)])]
-    (if (some coords used-cells)
-      (recur used-cells board-size)
+(defn- find-unused-cell
+  [used-coords board-size]
+  (let [coords (vec (take 2 (repeatedly #(rand-int board-size))))]
+    (if (some #(= coords %) used-coords)
+      (recur used-coords board-size)
       coords)))
+
+(defn- place-food
+  [used-coords board-size]
+  (conj #{} (find-unused-cell used-coords board-size)))
+
+(defn- maintain-food
+  [state board-size]
+  (let [{:keys [food snake walls]} state]
+    (if (not-empty food)
+      state
+      (merge state {:food (place-food (concat snake walls) board-size)}))))
+
+(defn- place-walls
+  [used-coords board-size]
+  (set
+   (take 7
+         (repeatedly #(find-unused-cell used-coords board-size)))))
+
+(defn- move-and-eat
+  [state board-size]
+  (let [{:keys [snake direction food score]} state]
+    (if-let [eaten-food (some food snake)]
+      (merge state {:snake (snk/grow-snake snake direction board-size)
+                    :food  (disj food eaten-food)
+                    :score (inc score)})
+      (update state :snake snk/move-snake direction board-size))))
 
 (defn starting-state
   [board-size]
-  (let [starting-snake (snk/new-snake)]
-    {
+  (let [snake (snk/new-snake)
+        walls (place-walls snake board-size)
+        food  (place-food (concat snake walls) board-size)]
+    {:snake snake
+     :food  food
+     :walls walls
      :direction [0 1]
-     :snake starting-snake
      :speed 100
-     :food (place-food starting-snake board-size)
-     :walls (set (take 7 (repeatedly #(random-coord-in-board board-size))))
      :pause false
      :level 1
-     :score 0
-     }))
+     :score 0}))
 
 (defn next-state
-  [snake food walls direction score board-size]
-  (cond (snk/self-colliding? snake)
-          :dead
-        (some walls snake)
-          :dead
-        (some food snake)
-          (let [new-snake (snk/grow-snake snake direction board-size)]
-            {:snake new-snake
-             :food (place-food (distinct (concat new-snake walls)) board-size)
-             :score (inc score)})
+  [state board-size]
+  (cond (snk/self-colliding? (:snake state))
+        :dead
+        (some (:walls state) (:snake state))
+        :dead
         :else
-          {:snake (snk/move-snake snake direction board-size)}))
+        (-> (move-and-eat state board-size)
+            (maintain-food board-size))))
