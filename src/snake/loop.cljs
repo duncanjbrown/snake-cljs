@@ -45,14 +45,12 @@
      :direction [0 1]
      :speed 100
      :pause false
-     :level 1
      :score 0}))
 
 (defn next-state
-  [state board-size]
-  (cond (snk/self-colliding? (:snake state))
-        :dead
-        (some (:walls state) (:snake state))
+  [{:keys [snake walls] :as state} board-size]
+  (cond (or (snk/self-colliding? snake)
+            (some walls snake))
         :dead
         :else
         (-> (move-and-eat state board-size)
