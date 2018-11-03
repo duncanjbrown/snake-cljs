@@ -2,6 +2,8 @@
   (:require [snake.snake :as snk]))
 
 (defn- find-unused-cell
+  "Given a board size and a set of used-coords,
+  return a random unused coord"
   [used-coords board-size]
   (let [coords (vec (take 2 (repeatedly #(rand-int board-size))))]
     (if (some #(= coords %) used-coords)
@@ -9,10 +11,14 @@
       coords)))
 
 (defn- place-food
+  "Find a place on the board to place some food,
+  given the board-size and the list of occupied
+  coords"
   [used-coords board-size]
   (conj #{} (find-unused-cell used-coords board-size)))
 
 (defn- maintain-food
+  "If the board lacks food, put some on it"
   [state board-size]
   (let [{:keys [food snake walls]} state]
     (if (not-empty food)
@@ -20,12 +26,17 @@
       (merge state {:food (place-food (concat snake walls) board-size)}))))
 
 (defn- place-walls
+  "Put some obstacles into the board, given the
+  board size and the list of occupied coords"
   [used-coords board-size]
   (set
    (take 7
          (repeatedly #(find-unused-cell used-coords board-size)))))
 
 (defn- move-and-eat
+  "Update the snake according to the direction
+  in state, perhaps consuming some food and growing
+  along the way"
   [state board-size]
   (let [{:keys [snake direction food score]} state]
     (if-let [eaten-food (some food snake)]

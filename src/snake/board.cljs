@@ -5,6 +5,10 @@
 (def board (vec (repeat size (vec (repeat size nil)))))
 
 (defn- populate
+  "Given a board, which is 2d vector of cells,
+  a set of cell co-ords, and a type keyword, return the
+  2d vector with the type keyword in the specified
+  positions"
   [board cells type]
   (reduce (fn [board coords]
             (assoc-in board coords type))
@@ -12,6 +16,9 @@
           cells))
 
 (defn- populate-snake
+  "Given a board and a set of co-ords, split
+  them into head and body and write them into
+  the board"
   [board snake]
   (let [[head & body] (reverse snake)]
     (-> board
@@ -19,6 +26,7 @@
         (populate body :snake))))
 
 (defn- board-cell
+  "Generate markup for a given cell type"
   [value]
   (case value
     nil [:div.cell.blank " "]
@@ -28,6 +36,8 @@
     :wall [:div.cell.wall " "]))
 
 (defn game
+  "Generate board markup from snake, food and
+  obstacle co-ordinates"
   [snake food walls]
   (let [populated-board (-> board
                             (populate @walls :wall)
@@ -41,5 +51,6 @@
             ^{:key (str y x)} [board-cell value]))])]))
 
 (defn score
+  "Generate markup to display the score"
   [score]
   [:p @score])
