@@ -33,8 +33,21 @@
   (if-let [direction (:direction command)]
     (if-not (reversing-direction? (:direction @state) direction)
       (swap! state assoc :direction direction)))
+  (if-let [new-speed (:set-speed command)]
+    (swap! state assoc :speed new-speed))
   (if (:pause command)
     (toggle-pause)))
+
+(defn- speed-setting->milliseconds
+  "Given a speed setting, return a value in milliseconds
+  suitable for using as a timeout between game ticks"
+  [speed-setting]
+  (let [speed-levels {1 300
+                      2 200
+                      3 100
+                      4 50
+                      5 25}]
+    (get speed-levels (int speed-setting))))
 
 (defn- tick
   "Calculate the next state of the game"
@@ -46,7 +59,7 @@
       :else
       (do
         (swap! state merge next)
-        (js/setTimeout #(reagent/next-tick tick) (:speed next))))))
+        (js/setTimeout #(reagent/next-tick tick) (speed-setting->milliseconds (:speed next)))))))
 
 (defn main []
   (when-let [element (js/document.getElementById "app")]
@@ -59,6 +72,9 @@
          (reagent/cursor state [:food])
          (reagent/cursor state [:walls])]
         [board/score
-         (reagent/cursor state [:score])]]
+         (reagent/cursor state [:score])]
+        [input/speed-controls
+         (reagent/cursor state [:speed])
+         handle-command]]
        element)
       (tick))))

@@ -54,7 +54,7 @@
      :food  food
      :walls walls
      :direction [0 1]
-     :speed 100
+     :speed 3
      :pause false
      :score 0}))
 

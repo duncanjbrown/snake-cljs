@@ -15,6 +15,14 @@
   [keycode]
   (get {119 :up 115 :down 97 :left 100 :right 104 :pause} keycode))
 
+(defn speed-controls
+  [current-speed command-handler]
+  [:label "Speed"
+   [:input {:type "range" :value @current-speed :min 1 :max 5
+            :style {:width "100%"}
+            :on-change (fn [e]
+                         (command-handler {:set-speed (.. e -target -value)}))}]])
+
 (defn handle-keypress
   "Handle the keypress event in JS and return a map
   suitable for core/handle-command"
