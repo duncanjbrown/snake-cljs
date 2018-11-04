@@ -5,3 +5,5 @@
 .cell.snake-head { color: red; font-size: 26px; }
 .cell.food { font-size: 36px; }
 .cell.wall { background-color: #444; }
+.help { font-family: monospace; }
+.help .key { padding: 2px; border: 1px solid black; border-radius: 2px; margin-right: 2px; }

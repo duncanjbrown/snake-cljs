@@ -61,6 +61,17 @@
         (swap! state merge next)
         (js/setTimeout #(reagent/next-tick tick) (speed-setting->milliseconds (:speed next)))))))
 
+(defn help-text
+  []
+  [:p.help
+   "Controls: "
+   [:span.key "W"]
+   [:span.key "A"]
+   [:span.key "S"]
+   [:span.key "D"]
+   "\t Pause: "
+   [:span.key "H"]])
+
 (defn main []
   (when-let [element (js/document.getElementById "app")]
     (do
@@ -75,6 +86,7 @@
          (reagent/cursor state [:score])]
         [input/speed-controls
          (reagent/cursor state [:speed])
-         handle-command]]
+         handle-command]
+        [help-text]]
        element)
       (tick))))
