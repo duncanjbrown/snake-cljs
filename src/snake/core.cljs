@@ -28,7 +28,8 @@
 (defn- restart!
   "Restart the game while already running"
   []
-  (reset! state (loop/starting-state board/size)))
+  (when (= :over (:game-state @state))
+    (start!)))
 
 (defn- reversing-direction?
   "Given two 2d vectors, determine whether they
@@ -84,9 +85,7 @@
    [:span.key "S"]
    [:span.key "D"]
    "\t Pause: "
-   [:span.key "H"]
-   "\t Restart: "
-   [:span.key "="]])
+   [:span.key "H"]])
 
 (defn main []
   (when-let [element (js/document.getElementById "app")]
@@ -95,6 +94,8 @@
       (.addEventListener js/document "keypress" #(handle-command (input/handle-keypress %)))
       (reagent/render-component
        [:div#game
+        [board/overlay
+         (reagent/cursor state [:game-state])]
         [board/game
          (reagent/cursor state [:snake])
          (reagent/cursor state [:food])

@@ -14,7 +14,7 @@
   representing a command"
   [keycode]
   (println keycode)
-  (get {119 :up 115 :down 97 :left 100 :right 104 :pause 61 :restart} keycode))
+  (get {119 :up 115 :down 97 :left 100 :right 104 :pause 32 :restart} keycode))
 
 (defn speed-controls
   [current-speed command-handler]

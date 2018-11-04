@@ -1,9 +1,20 @@
-#game { width: 600px; margin: 0 auto; }
+#game { width: 600px; margin: 0 auto; position: relative; }
 .row { clear: both; }
 .cell { float: left; width: 40px; height: 40px; border: 1px solid #eee; text-align: center;}
 .cell.snake { font-size: 26px; }
 .cell.snake-head { color: red; font-size: 26px; }
 .cell.food { font-size: 36px; }
 .cell.wall { background-color: #444; }
-.help { font-family: monospace; }
-.help .key { padding: 2px; border: 1px solid black; border-radius: 2px; margin-right: 2px; }
+.help, .overlay { font-family: monospace; }
+.key { padding: 2px; border: 1px solid; border-radius: 2px; margin-right: 2px; }
+
+.overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,0.5);
+    padding-top: 1em;
+    padding-left: 1em;
+    color: white;
+}
+

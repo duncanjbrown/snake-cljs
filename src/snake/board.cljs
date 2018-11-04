@@ -54,3 +54,12 @@
   "Generate markup to display the score"
   [score]
   [:p @score])
+
+(defn overlay
+  "Render an overlay suitable for displaying messages
+  to the player"
+  [game-state]
+  (when (= :over @game-state)
+    [:div.overlay
+     [:h1 "GAME OVER"]
+     [:h2 "Press " [:span.key "space"] " to restart"]]))
