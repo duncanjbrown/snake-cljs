@@ -58,8 +58,9 @@
 (defn overlay
   "Render an overlay suitable for displaying messages
   to the player"
-  [game-state]
+  [game-state score]
   (when (= :over @game-state)
     [:div.overlay
      [:h1 "GAME OVER"]
+     [:h2 "Your score was " @score]
      [:h2 "Press " [:span.key "space"] " to restart"]]))

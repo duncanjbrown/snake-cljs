@@ -95,7 +95,8 @@
       (reagent/render-component
        [:div#game
         [board/overlay
-         (reagent/cursor state [:game-state])]
+         (reagent/cursor state [:game-state])
+         (reagent/cursor state [:score])]
         [board/game
          (reagent/cursor state [:snake])
          (reagent/cursor state [:food])
