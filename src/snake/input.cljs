@@ -13,7 +13,8 @@
   "Resolve a numbered keycode to a keyword
   representing a command"
   [keycode]
-  (get {119 :up 115 :down 97 :left 100 :right 104 :pause} keycode))
+  (println keycode)
+  (get {119 :up 115 :down 97 :left 100 :right 104 :pause 61 :restart} keycode))
 
 (defn speed-controls
   [current-speed command-handler]
@@ -27,7 +28,7 @@
   "Handle the keypress event in JS and return a map
   suitable for core/handle-command"
   [e]
-  (let [command (keypress-to-command (.-charCode e))]
+  (if-let [command (keypress-to-command (.-charCode e))]
     (if-let [new-direction (direction-to-vector command)]
       {:direction new-direction}
       {command true})))

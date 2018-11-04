@@ -4,7 +4,7 @@
             [snake.loop :as loop]
             [snake.input :as input]))
 
-(defonce state (reagent/atom (loop/starting-state board/size)))
+(defonce state (reagent/atom {}))
 
 (declare tick)
 (defn- toggle-pause
@@ -14,11 +14,21 @@
   (swap! state update :pause not)
   (tick))
 
-(defn- restart!
-  "Start the game again"
+(defn- start!
+  "Start the game"
   []
   (reset! state (loop/starting-state board/size))
   (tick))
+
+(defn- stop!
+  "End the game"
+  []
+  (swap! state merge {:game-state :over}))
+
+(defn- restart!
+  "Restart the game while already running"
+  []
+  (reset! state (loop/starting-state board/size)))
 
 (defn- reversing-direction?
   "Given two 2d vectors, determine whether they
@@ -35,6 +45,8 @@
       (swap! state assoc :direction direction)))
   (if-let [new-speed (:set-speed command)]
     (swap! state assoc :speed new-speed))
+  (if (:restart command)
+    (restart!))
   (if (:pause command)
     (toggle-pause)))
 
@@ -50,16 +62,18 @@
     (get speed-levels (int speed-setting))))
 
 (defn- tick
-  "Calculate the next state of the game"
+  "Calculate the next state of the game. If the game is over,
+  don't bother."
   []
-  (let [next (loop/next-state @state board/size)]
-    (cond
-      (:pause next) nil
-      (= :dead next) (restart!)
-      :else
-      (do
-        (swap! state merge next)
-        (js/setTimeout #(reagent/next-tick tick) (speed-setting->milliseconds (:speed next)))))))
+  (if (not= :over (:game-state @state))
+    (let [next (loop/next-state @state board/size)]
+      (cond
+        (:pause next) nil
+        (= :dead next) (stop!)
+        :else
+        (do
+          (swap! state merge next)
+          (js/setTimeout #(reagent/next-tick tick) (speed-setting->milliseconds (:speed next))))))))
 
 (defn help-text
   []
@@ -70,11 +84,14 @@
    [:span.key "S"]
    [:span.key "D"]
    "\t Pause: "
-   [:span.key "H"]])
+   [:span.key "H"]
+   "\t Restart: "
+   [:span.key "="]])
 
 (defn main []
   (when-let [element (js/document.getElementById "app")]
     (do
+      (start!)
       (.addEventListener js/document "keypress" #(handle-command (input/handle-keypress %)))
       (reagent/render-component
        [:div#game
@@ -88,5 +105,4 @@
          (reagent/cursor state [:speed])
          handle-command]
         [help-text]]
-       element)
-      (tick))))
+       element))))

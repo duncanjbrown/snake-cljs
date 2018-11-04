@@ -56,6 +56,7 @@
      :direction [0 1]
      :speed 3
      :pause false
+     :game-state :not-started
      :score 0}))
 
 (defn next-state
