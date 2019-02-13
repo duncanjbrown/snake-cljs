@@ -1,0 +1,4 @@
+{:output-to "dist/snake.js"
+ :optimizations :advanced
+ :main snake.core}
+

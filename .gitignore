@@ -1,4 +1,6 @@
 target
+dist
 .nrepl-port
 .rebel_readline_history
 .cpcache
+

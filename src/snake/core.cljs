@@ -87,7 +87,7 @@
    "\t Pause: "
    [:span.key "H"]])
 
-(defn main []
+(defn ^:export main []
   (when-let [element (js/document.getElementById "app")]
     (do
       (start!)
